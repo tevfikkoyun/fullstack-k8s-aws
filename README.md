@@ -13,7 +13,7 @@ Developer
     ▼
 GitHub
     │
-    ├── (planned) GitHub Actions CI/CD
+    ├── GitHub Actions CI/CD
     │       ├── docker build + push → ECR
     │       └── kubectl apply → EKS
     ▼
