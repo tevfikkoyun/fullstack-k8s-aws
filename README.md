@@ -80,6 +80,7 @@ ECR Repos · IAM Roles · OIDC Provider
 ![ECR Repositories](ecr-repositories.png)
 ![ALB Load Balancer](alb-load-balancer.png)
 ![EBS Volumes](ebs-volumes.png)
+![GitHub Actions CI/CD Pipeline](github-actions-eks-success.png)
 
 ## What Terraform provisions
 
@@ -181,6 +182,7 @@ kubectl delete -f k8s/database/
 # Wait for ALB to be deleted, then destroy infrastructure
 cd terraform
 terraform destroy
+
 ```
 
 ## How this project connects the series
