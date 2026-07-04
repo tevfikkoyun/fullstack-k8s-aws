@@ -119,3 +119,33 @@ resource "aws_iam_role_policy_attachment" "alb_controller_policy" {
   policy_arn = "arn:aws:iam::099308196472:policy/AWSLoadBalancerControllerIAMPolicy"
   role       = aws_iam_role.alb_controller.name
 }
+
+# ALB Controller Inline Policy - eksik EC2 yetkileri
+resource "aws_iam_role_policy" "alb_controller_inline" {
+  name = "AlbControllerInlinePolicy"
+  role = aws_iam_role.alb_controller.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "ec2:DescribeRouteTables",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeInstances",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeAvailabilityZones",
+        "elasticloadbalancing:DescribeListenerAttributes",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "elasticloadbalancing:DescribeRules",
+        "elasticloadbalancing:DescribeTags"
+      ]
+      Resource = "*"
+    }]
+  })
+}
