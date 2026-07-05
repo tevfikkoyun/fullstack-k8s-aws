@@ -76,10 +76,19 @@ ECR Repos · IAM Roles · OIDC Provider
 
 ## AWS Resources
 
+**EKS Cluster** — Kubernetes v1.32, Active status, OIDC provider configured for IRSA
 ![EKS Cluster Active](eks-cluster.png)
+
+**Amazon ECR** — Two private repositories (`fullstack-backend`, `fullstack-frontend`) provisioned by Terraform
 ![ECR Repositories](ecr-repositories.png)
+
+**AWS Application Load Balancer** — Created automatically by the ALB Ingress Controller when the Ingress resource was applied, internet-facing, spanning 2 Availability Zones
 ![ALB Load Balancer](alb-load-balancer.png)
+
+**EBS Volume** — 5Gi gp2 volume provisioned dynamically by the EBS CSI Driver for the PostgreSQL PersistentVolumeClaim
 ![EBS Volumes](ebs-volumes.png)
+
+**GitHub Actions CI/CD** — Both pipeline runs successful: initial deploy and rolling update triggered by `git push`
 ![GitHub Actions CI/CD Pipeline](github-actions-eks-success.png)
 
 ## What Terraform provisions
