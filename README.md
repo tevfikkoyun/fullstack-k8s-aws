@@ -24,22 +24,22 @@ Amazon ECR
 │                  AWS EKS Cluster                    │
 │                                                     │
 │  ┌─────────────────────────────────────────────┐    │
-│  │         AWS Application Load Balancer        │    │
-│  │    (created by ALB Ingress Controller)       │    │
+│  │         AWS Application Load Balancer        │   │
+│  │    (created by ALB Ingress Controller)       │   │
 │  └──────────────┬──────────────────────────────┘    │
-│                 │                                    │
+│                 │                                   │
 │        ┌────────┴────────┐                          │
 │        │ /api/*          │ /*                       │
 │        ▼                 ▼                          │
 │   backend Service   frontend Service                │
 │   (ClusterIP)       (ClusterIP)                     │
 │        │                 │                          │
-│   ┌────┴────┐       ┌────┴────┐                    │
+│   ┌────┴────┐       ┌────┴────┐                     │
 │   │backend  │       │frontend │                     │
 │   │Pod 1    │       │Pod 1    │                     │
 │   │backend  │       │frontend │                     │
 │   │Pod 2    │       │Pod 2    │                     │
-│   └────┬────┘       └─────────┘                    │
+│   └────┬────┘       └─────────┘                     │
 │        │ HPA (2-5 replicas)                         │
 │        ▼                                            │
 │   postgres Service                                  │
@@ -50,8 +50,8 @@ Amazon ECR
 │   │  Pod    │                                       │
 │   └────┬────┘                                       │
 │        │                                            │
-│   EBS Volume (5Gi gp2)                             │
-│   via EBS CSI Driver                               │
+│   EBS Volume (5Gi gp2)                              |
+│   via EBS CSI Driver                                |
 └─────────────────────────────────────────────────────┘
 
 All infrastructure provisioned with Terraform:
@@ -90,6 +90,26 @@ ECR Repos · IAM Roles · OIDC Provider
 
 **GitHub Actions CI/CD** — Both pipeline runs successful: initial deploy and rolling update triggered by `git push`
 ![GitHub Actions CI/CD Pipeline](github-actions-eks-success.png)
+
+## Observability Stack
+
+Prometheus + Grafana monitoring deployed to the `monitoring` namespace via Helm (`kube-prometheus-stack`), providing cluster-wide metrics collection, dashboards, and alerting.
+
+**Grafana Cluster Dashboard** — real-time CPU, memory, and network metrics across all namespaces (`default`, `kube-system`, `monitoring`)
+![Grafana Cluster Dashboard](grafana-cluster-dashboard.png)
+
+**Application workload visible in Grafana** — backend, frontend, and postgres Pods appearing in the `default` namespace after deployment
+![Grafana with Application](grafana-with-app.png)
+
+**Alert Rules** — three custom PrometheusRule alerts defined for the `default` namespace:
+- `HighCPUUsage` — fires when Pod CPU exceeds threshold for 2 minutes
+- `PodRestartingTooMuch` — fires when a Pod restarts more than 3 times in 15 minutes
+- `HighMemoryUsage` — fires when Pod memory exceeds 100MB for 2 minutes
+
+![Grafana Alert Rules](grafana-alert-rules.png)
+
+**HighMemoryUsage alert firing** — load generator triggered memory spike on `postgres` Pod, alert fired with `severity: warning`
+![Alert Firing](grafana-alert-firing.png)
 
 ## What Terraform provisions
 
